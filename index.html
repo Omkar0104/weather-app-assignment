@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Weather App</title>
+    <style>
+      /* Add your CSS styles here */
+      body {
+        font-family: Arial, sans-serif;
+      }
+
+      form {
+        margin-bottom: 20px;
+      }
+
+      input[type="text"] {
+        padding: 10px;
+        width: 200px;
+      }
+
+      button {
+        padding: 10px 20px;
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        cursor: pointer;
+      }
+
+      #weatherResults {
+        padding: 10px;
+        border: 1px solid #ccc;
+        background-color: #f5f5f5;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Weather App</h1>
+    <form id="weatherForm">
+      <label for="cityInput">Enter a city:</label>
+      <input type="text" id="cityInput" placeholder="e.g., New York" />
+      <button type="submit">Get Weather</button>
+    </form>
+    <div id="weatherResults"></div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const form = document.getElementById("weatherForm");
+        const cityInput = document.getElementById("cityInput");
+        const weatherResults = document.getElementById("weatherResults");
+
+        form.addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const city = cityInput.value;
+          const cityVal = city.trim().split([","]);
+          console.log(cityVal);
+          if (!cityVal) return;
+
+          try {
+            // Replace with the correct backend URL
+            const response = await fetch("http://localhost:3000/getWeather", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(cityVal),
+            });
+
+            if (!response.ok) {
+              throw new Error("Network response was not ok");
+            }
+
+            const data = await response.json();
+            console.log(data);
+
+            // Display weather data on the page
+            weatherResults.innerHTML = JSON.stringify(data.weather, null, 2);
+          } catch (error) {
+            console.error("Error:", error);
+            weatherResults.innerHTML = "Error fetching weather data.";
+          }
+        });
+      });
+    </script>
+  </body>
+</html>
